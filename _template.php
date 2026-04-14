@@ -5,6 +5,21 @@ if (!isset($code, $title, $description, $icon)) {
 }
 
 $accent = ($code >= 500) ? '#ef4444' : '#f59e0b';
+
+$envFile = __DIR__ . '/.env';
+$env = [];
+if (is_readable($envFile)) {
+    foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        if ($line[0] === '#' || !str_contains($line, '=')) continue;
+        [$key, $value] = explode('=', $line, 2);
+        $env[trim($key)] = trim($value);
+    }
+}
+
+$companyName    = $env['COMPANY_NAME']    ?? 'Artic';
+$companyUrl     = $env['COMPANY_URL']     ?? 'https://articcompany.com';
+$logoTextUrl    = $env['LOGO_TEXT_URL']   ?? 'https://assets.articc.top/logo/text-color.svg';
+$logoIconUrl    = $env['LOGO_ICON_URL']   ?? 'https://assets.articc.top/logo/icon-color.svg';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +27,7 @@ $accent = ($code >= 500) ? '#ef4444' : '#f59e0b';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $code ?> <?= $title ?></title>
-    <link rel="icon" type="image/svg+xml" href="https://assets.articc.top/logo/icon-color.svg">
+    <link rel="icon" type="image/svg+xml" href="<?= htmlspecialchars($logoIconUrl) ?>">
     <script>
         (function () {
             const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -67,8 +82,8 @@ $accent = ($code >= 500) ? '#ef4444' : '#f59e0b';
         }
 
         .artic-logo {
-            height: 32px;
-            opacity: 0.5;
+            height: 48px;
+            opacity: 0.6;
             transition: opacity 0.2s ease;
         }
 
@@ -89,8 +104,8 @@ $accent = ($code >= 500) ? '#ef4444' : '#f59e0b';
     </main>
 
     <footer class="py-4 text-center">
-        <a href="https://articcompany.com" target="_blank" rel="noopener noreferrer">
-            <img src="https://assets.articc.top/logo/text-color.svg" alt="Artic" class="artic-logo">
+        <a href="<?= htmlspecialchars($companyUrl) ?>" target="_blank" rel="noopener noreferrer">
+            <img src="<?= htmlspecialchars($logoTextUrl) ?>" alt="<?= htmlspecialchars($companyName) ?>" class="artic-logo">
         </a>
     </footer>
 </body>
